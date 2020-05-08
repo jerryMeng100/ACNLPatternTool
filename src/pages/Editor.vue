@@ -8,7 +8,7 @@
             <canvas class="fordrawing" ref="canvas3" width="64" height="64"/>
             <div class="pattern-info">
               <div class="pattern_title">{{patTitle}}</div>
-              <div class="pattern_author">by {{patAuthor}}</div> 
+              <div class="pattern_author">by {{patAuthor}}</div>
               <div class="pattern_town">from {{patTown}}</div>
               <div class="pattern_typename">{{patTypeName}}</div>
             </div>
@@ -37,10 +37,14 @@
 
       <div class="right">
         <div class="topbar-buttons">
-          <button class="menu-button" @click="onMainMenu">
+          <!--<button class="menu-button" @click="onMainMenu">
             <object class="svg nav white-circle" :data="phoneSvg"></object>
             Menu
             <object class="svg-small" :data="downArrowSvg"></object>
+          </button>-->
+          <button class="create-button" @click="goToBrowse">
+            Browse
+            <object class="svg" :data="addSvg"></object>
           </button>
         </div>
         <div class="tools-and-colors">
@@ -263,8 +267,8 @@
                       :value="s">
                       {{s}}
                     </option>
-                  </select> 
-                </div>   
+                  </select>
+                </div>
               </div>
               <div>
                 <input type="checkbox" value="Y" v-model="pubNSFW">This pattern is not appropriate for children</input>
@@ -400,6 +404,9 @@ export default {
         window.alert("A pattern just like this already exists in the database!");
       }
       this.publishModal = false;
+    },
+    goToBrowse: function() {
+      this.$router.push({ path: `/browse` });
     },
     onOpenLocal(){
       let tmp = {};
