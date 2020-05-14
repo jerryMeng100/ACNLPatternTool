@@ -1,24 +1,6 @@
 // api
 import axios from "axios";
 const { API_URL } = process.env;
-import firebase from "firebase";
-import md5 from "md5"
-
-//Firebase project configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCHjy1cDN6_eVBU0ylpF1KqAlesUyP6j-I",
-    authDomain: "fashion-crossing.firebaseapp.com",
-    databaseURL: "https://fashion-crossing.firebaseio.com",
-    projectId: "fashion-crossing",
-    storageBucket: "fashion-crossing.appspot.com",
-    messagingSenderId: "5433173188",
-    appId: "1:5433173188:web:e7f4a109ce70aca3cd9591",
-    measurementId: "G-N1Y6T01NDB"
-};
-
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-var db = firebase.firestore()
 
 const api = (() => {
   return axios.create({
@@ -41,7 +23,7 @@ const encodeQueryParams = (params) => {
   }, "?");
 };
 
-//Upload
+// Upload
 const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSFW) => {
   const response = await api.post('api.php', {
     pattern:pattData,
@@ -56,31 +38,6 @@ const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSF
   return response.data;
 };
 
-//NEW VERSION OF UPLOAD: UNFINISHED
-// const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSFW) => {
-//   const hash = md5(pattData)
-//   return db.collection("patterns").doc(hash).set(
-//     {
-//         pattern:pattData,
-//         styletag_a:styleA,
-//         styletag_b:styleB,
-//         styletag_c:styleC,
-//         typetag_a:typeA,
-//         typetag_b:typeB,
-//         typetag_c:typeC,
-//         nokids:(NSFW?"Y":"")
-//     }
-//   ).then(function() {
-//       console.log("Document successfully written!");
-//       return {"upload":hash}
-//   })
-//   .catch(function(error) {
-//       console.error("Error writing document: ", error);
-//       return {"error":"cannot write"}
-//   });
-// }
-
-
 // Search
 const search = async (q, options) => {
   const { nsfc, unapproved: letsgetdangerous } = options;
@@ -93,32 +50,11 @@ const search = async (q, options) => {
   return response.data;
 };
 
-// // Open single pattern
+// Open single pattern
 const view = async (hash) => {
   const response = await api.get(`api.php${encodeQueryParams({view: hash})}`);
-  console.log("Document data:", response.data);
   return response.data;
 };
-
-//8549fe81ea6fb5acbea2f7530c4a14a9
-
-//NEW VERSION OF VIEW
-// const view = async (hash) => {
-//   return db.collection("patterns").doc(hash).get().then(function(doc) {
-//     if (doc.exists) {
-//         console.log("Document data:", doc.data().bytes);
-//         return doc.data().bytes;
-//     } else {
-//         // doc.data() will be undefined in this case
-//         console.log("No such document!");
-//         return ""
-//     }
-// }).catch(function(error) {
-//     console.log("Error getting document:", error);
-//     return ""
-// });
-//
-// }
 
 // Recent uploads
 const recent = async (options) => {
@@ -225,3 +161,4 @@ export default {
   tags_style,
   tags_type
 };
+
