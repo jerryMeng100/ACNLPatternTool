@@ -7,7 +7,9 @@ const {
 
 const loadGLTF = (fileName) => {
   const loc = path.resolve(pathToInjected, fileName);
+  //const buffer = fs.readFileSync(pathToInjected + "/dress_half_data.bin");
   const buffer = fs.readFileSync(loc);
+  console.log (buffer);
   return JSON.parse(buffer.toString())
 }
 
