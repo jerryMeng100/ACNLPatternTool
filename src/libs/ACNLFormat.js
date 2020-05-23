@@ -93,9 +93,9 @@ class ACNLFormat{
       this.patternType = create_pat_type;
     }
 
-    if (ACNLFormat.typeInfo[this.patternType]){
+    if (false){//ACNLFormat.typeInfo[this.patternType]){
       this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
-    }else{
+    } else{
       this.currMask = null;
     }
   }
@@ -189,7 +189,7 @@ class ACNLFormat{
     if (i < 0 || i > 14){return 0;}
     return this.dataBytes[0x58 + i];
   }
-  
+
   setPalette(i, newVal){
     if (i < 0 || i > 14){return;}
     this.dataBytes[0x58 + i] = newVal;
@@ -252,7 +252,7 @@ class ACNLFormat{
       this.b = nb;
     }
     this.dataBytes[0x69] = newVal;
-    if (ACNLFormat.typeInfo[this.patternType]){
+    if (false){//ACNLFormat.typeInfo[this.patternType]){
       this.currMask = ACNLFormat.typeInfo[this.patternType].mask;
     }else{
       this.currMask = null;
@@ -427,4 +427,3 @@ for (let i = 0; i < 256; i++){
 
 
 export default ACNLFormat;
-
