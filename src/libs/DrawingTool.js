@@ -49,7 +49,7 @@ class RenderTarget{
       }
       this.context.fillRect(x*this.zoom+this.zoom-((x%8==7)?2:1),y*this.zoom,(x%8==7)?2:1,this.zoom);
       if (y == 15){
-        this.context.fillStyle = "#BB0000";
+        this.context.fillStyle = "#00BB00";
       }else{
         this.context.fillStyle = "#AAAAAA";
       }
@@ -79,7 +79,7 @@ class RenderTarget{
       }
       for (let y = 0; y < this.canvas.height/this.zoom; ++y){
         if (y == 15){
-          this.context.fillStyle = "#BB0000";
+          this.context.fillStyle = "#00BB00";
         }else{
           this.context.fillStyle = "#AAAAAA";
         }
@@ -160,7 +160,7 @@ class DrawingTool{
     this.render();
     return true;
   }
-  
+
   redo(){
     if (!this.redoHistory.length){return false};
     this.pushUndo();
@@ -171,7 +171,7 @@ class DrawingTool{
     this.render();
     return true;
   }
-  
+
   /// Gets this.currentColor translated into a HTML color
   get color(){
     return this.getPalette(this.currentColor);
@@ -215,7 +215,7 @@ class DrawingTool{
   }
   get typeInfo(){return ACNLFormat.typeInfo[this.pattern.patternType];}
   get allTypes(){return ACNLFormat.typeInfo;}
-  
+
   /// Finds the closest global palette index we can find to the color c
   /// Supports #RRGGBB-style, [r,g,b]-style, or simply passing a global palette index.
   findRGB(c){
@@ -412,7 +412,12 @@ class DrawingTool{
   render(){
     //Abort if there are no render targets
     if (!this.renderTargets.length){return;}
-
+    console.log(this.renderTargets.length)
+    for(let i = 0; i < this.renderTargets.length; i++){
+      console.log(this.renderTargets[i].opt)
+      console.log(this.renderTargets[i].width)
+      console.log(this.renderTargets[i].height)
+    }
     //Build lookup table of palette colors
     let palette = [];
     for (let i = 0; i < 16; ++i){palette.push(this.getPalette(i));}
@@ -428,7 +433,7 @@ class DrawingTool{
         this.renderTargets[0].drawPixel(x, y, palette[this.pixels[i]]);
       }
     }
-    
+
     //Finally, copy to all others
     for (let i = 1; i < this.renderTargets.length; ++i){
       this.renderTargets[i].calcZoom(this.pattern.width);
@@ -521,4 +526,3 @@ class DrawingTool{
 };
 
 export default DrawingTool;
-

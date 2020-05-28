@@ -127,14 +127,18 @@ export default {
     this.renderer = new WebGLRenderer({alpha:true, canvas:this.$refs.canvas3d, antialias:true});
     this.renderer.setClearColor( 0x000000, 0 );
     this.renderCanvas.width = 128;
-    this.renderCanvas.height = 512;
-    this.drawingTool.addCanvas(this.renderCanvas, {tall:true, drawCallback:()=>{
+    this.renderCanvas.height = 128//512;
+    //this.drawingTool.addCanvas(this.renderCanvas, {tall:true, drawCallback:()=>{
+      //if (this.texture){this.texture.needsUpdate = true;}
+    //}});
+    this.drawingTool.addCanvas(this.renderCanvas, {drawCallback:()=>{
       if (this.texture){this.texture.needsUpdate = true;}
     }});
 
     let renderContext = this.renderCanvas.getContext('2d');
     renderContext.fillStyle = "rgba(255,255,255,1)";
-    renderContext.fillRect(0, 0, 32, 128);
+    //renderContext.fillRect(0, 0, 32, 128);
+    renderContext.fillRect(0, 0, 64, 64)
 
     this.camera.position.z = 15;
     this.camera.position.y = 30;
