@@ -132,7 +132,7 @@
               <span>Title: <input type="text" maxlength="20" v-model="patTitle"></span>
               <span>Author: <input type="text" maxlength="9" v-model="patAuthor"></span>
               <span>Town: <input type="text" maxlength="9" v-model="patTown"></span>
-              <span>Type:
+              <!--<span>Type:
                 <select v-model="patType">
                   <option
                     v-for="(ti, no) in allTypes"
@@ -140,7 +140,7 @@
                     :value="no">{{ti.name}}
                   </option>
                 </select>
-              </span>
+              </span>-->
           </div>
           <div v-if="storedAuthorHuman">Stored: {{storedAuthorHuman}}</div>
           <p class="edit-notice">
@@ -540,6 +540,7 @@ export default {
       this.patTitle = this.drawingTool.title;
       this.patAuthor = this.drawingTool.creator[0];
       this.patTown = this.drawingTool.town[0];
+      this.drawingTool.patternType = 1;
 
       // need to wait 2 ticks before access ref in portal
       // AFTER setting isOpenModal to true

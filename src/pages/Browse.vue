@@ -46,8 +46,8 @@
           <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
             {{opt.style_sub_b}}
           </span>
-          <button class="like-button" @click="goToEditor">
-            <object class="svg" :data="addSvg"></object>
+          <button class="like-button" @click="toggleLikes">
+            Like
           </button>
         </div>
       </a>
@@ -196,6 +196,9 @@ export default {
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
     },
+    async toggleLikes() {
+
+    },
     tagClass(tag){
       if (tag != null) return {backgroundColor: `${colors[tag.toLowerCase().replace(' ', '-')]}`};
     },
@@ -333,6 +336,23 @@ nav .create-button .svg {
   align-items: flex-start;
   padding: 8px 12px;
   width: 150px;
+}
+like-button {
+  background-color: #33FFFF;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  min-width: 120px;
+  padding: 10px 18px;
+  justify-content: space-between;
+  border-radius: 35px;
+  cursor: pointer;
 }
 .type-tags, .pattern-tags{
   min-height: 30px;
