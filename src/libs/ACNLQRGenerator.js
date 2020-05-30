@@ -121,51 +121,51 @@ async function generateACNLQR(newData){
   ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
-  if (!path3D){
+  if (true){//!path3D){
     const pattSize = Math.floor((height-60)/sPh);
     pattHeight = pattSize*sPh;
     ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, (height-pattHeight)/2, pattSize*sPw, pattHeight);
-  }else{
-    pattHeight = height-60;
-    //3D render!
-    const threeCanvas = document.createElement("canvas");
-    threeCanvas.width = width;
-    threeCanvas.height = pattHeight/2;
-    const renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas, antialias:true});
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
-    let model = false;
-    renderer.setClearColor( 0x000000, 0 );
-    let texture = new Texture(textureCanvas)
-    texture.needsUpdate = true;
-    texture.encoding = sRGBEncoding;
-    texture.flipY = false;
-    texture.magFilter = NearestFilter;
-    const texMat = new MeshBasicMaterial({map:texture});
-    const loadModel = (x) => {return new Promise(resolve => {
-      let loader = new GLTFLoader();
-      loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
-    });};
-    const gltf = await loadModel(path3D);
-    model = gltf.scene.children[0];
-    model.traverse((child) => {
-      if (child instanceof Mesh){child.material = texMat;}
-    });
-    scene.add(model);
-    camera.position.z = 15;
-    camera.position.y = 25;
-    camera.rotation.x = 5.85;
-    renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2, threeCanvas.width, threeCanvas.height);
-    model.rotation.y = Math.PI;
-    renderer.render(scene, camera);
-    ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
-    //Free ThreeJS-related resources
-    scene.dispose();
-    texMat.dispose();
-    texture.dispose();
-    renderer.dispose();
-  }
+  }//else{
+  //   pattHeight = height-60;
+  //   //3D render!
+  //   const threeCanvas = document.createElement("canvas");
+  //   threeCanvas.width = width;
+  //   threeCanvas.height = pattHeight/2;
+  //   const renderer = new WebGLRenderer({alpha:true, canvas:threeCanvas, antialias:true});
+  //   const scene = new Scene();
+  //   const camera = new PerspectiveCamera(75, threeCanvas.width/threeCanvas.height, 0.1, 1000);
+  //   let model = false;
+  //   renderer.setClearColor( 0x000000, 0 );
+  //   let texture = new Texture(textureCanvas)
+  //   texture.needsUpdate = true;
+  //   texture.encoding = sRGBEncoding;
+  //   texture.flipY = false;
+  //   texture.magFilter = NearestFilter;
+  //   const texMat = new MeshBasicMaterial({map:texture});
+  //   const loadModel = (x) => {return new Promise(resolve => {
+  //     let loader = new GLTFLoader();
+  //     loader.parse(JSON.stringify(x), "", (gltf) => {resolve(gltf);});
+  //   });};
+  //   const gltf = await loadModel(path3D);
+  //   model = gltf.scene.children[0];
+  //   model.traverse((child) => {
+  //     if (child instanceof Mesh){child.material = texMat;}
+  //   });
+  //   scene.add(model);
+  //   camera.position.z = 15;
+  //   camera.position.y = 25;
+  //   camera.rotation.x = 5.85;
+  //   renderer.render(scene, camera);
+  //   ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2, threeCanvas.width, threeCanvas.height);
+  //   model.rotation.y = Math.PI;
+  //   renderer.render(scene, camera);
+  //   ctx.drawImage(threeCanvas, 0, 0, threeCanvas.width, threeCanvas.height, pattCenter-width/2, (height-pattHeight)/2+threeCanvas.height, threeCanvas.width, threeCanvas.height);
+  //   //Free ThreeJS-related resources
+  //   scene.dispose();
+  //   texMat.dispose();
+  //   texture.dispose();
+  //   renderer.dispose();
+  // }
 
   //Prepare background pattern for text
   bgCanvas.width=1;
@@ -273,4 +273,3 @@ async function generateACNLQR(newData){
 }
 
 export default generateACNLQR;
-

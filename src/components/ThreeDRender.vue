@@ -139,7 +139,6 @@ export default {
     renderContext.fillStyle = "rgba(255,255,255,1)";
     //renderContext.fillRect(0, 0, 32, 128);
     renderContext.fillRect(0, 0, 64, 64)
-
     this.camera.position.z = 15;
     this.camera.position.y = 30;
     this.camera.rotation.x = 5.6;

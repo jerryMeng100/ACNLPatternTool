@@ -46,6 +46,9 @@
           <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
             {{opt.style_sub_b}}
           </span>
+          <button class="like-button" @click="goToEditor">
+            <object class="svg" :data="addSvg"></object>
+          </button>
         </div>
       </a>
     </div>
