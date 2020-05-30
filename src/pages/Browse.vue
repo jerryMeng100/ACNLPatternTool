@@ -18,7 +18,7 @@
       </button>
     </nav>
     <div class="patterns">
-      <a class="pattern-container" v-for="opt in results" :key="opt.bytes" :href="opt.url">
+      <a class="pattern-container" v-for="(opt, index) in results" :key="opt.bytes"><!-- :href="opt.url">-->
         <h3>{{opt.title}}</h3>
         <div class="type-tags">
           <span v-if="opt.f_type != null" class="tag type">
@@ -46,9 +46,17 @@
           <span v-if="opt.style_sub_b != null" class="tag" :style="tagClass(opt.style_sub_b)">
             {{opt.style_sub_b}}
           </span>
-          <button class="like-button" @click="toggleLikes">
-            Like
+          <span>
+          <a class="like-button" :href="opt.url">
+            Make a Remix
+          </a>
+          <button class="like-button" @click="toggleLikes(opt.url, opt.likes, index)">
+            {{opt.likes.includes(ip) ? "unlike" : "like"}}
           </button>
+          <a>
+            {{opt.likes.length}}
+          </a>
+          </span>
         </div>
       </a>
     </div>
@@ -94,6 +102,7 @@ export default {
   components: {
     IconGenerator
   },
+  ip: "",
   beforeRouteUpdate: async function(to, from, next) {
     await this.loadFromRoute(to);
     next();
@@ -112,7 +121,8 @@ export default {
       'query',
       'results',
       'nsfc',
-      'unapproved'
+      'unapproved',
+      'ip'
     ]),
   },
   methods: {
@@ -152,7 +162,7 @@ export default {
         }
         else isCorrecting = true;
       }
-      // if any 'invalid' or uncessary data in query, correct it
+      // if any 'invalid' or unecessary data in query, correct it
       // next loop around will load results
       if (isCorrecting) {
         await this.$router.replace({ query: queryOptions });
@@ -196,7 +206,16 @@ export default {
     async goToEditor() {
       await this.$router.push({ path: `/editor` });
     },
-    async toggleLikes() {
+    async toggleLikes(url_of_liked, likes, index) {
+      var hash = url_of_liked.substring(10);
+      var old_likes = JSON.parse(JSON.stringify(likes));
+      var ip_index = likes.indexOf(this.ip);
+      if (ip_index !== -1) {
+        likes.splice(ip_index, 1);
+      } else {
+        likes.push(ip_index);
+      }
+      await origin.toggleLike(hash, this.ip, old_likes);
 
     },
     tagClass(tag){
@@ -296,6 +315,23 @@ nav .create-button .svg {
   width: 25px;
   pointer-events: none;
 }
+like-button {
+  background-color: #33FFFF;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  min-width: 120px;
+  padding: 10px 18px;
+  justify-content: space-between;
+  border-radius: 35px;
+  cursor: pointer;
+}
 .patterns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -336,23 +372,6 @@ nav .create-button .svg {
   align-items: flex-start;
   padding: 8px 12px;
   width: 150px;
-}
-like-button {
-  background-color: #33FFFF;
-  color: #FFFFFF;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  border: none;
-  box-shadow: rgba(0,0,0,0.2) 0 0 8px;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  min-width: 120px;
-  padding: 10px 18px;
-  justify-content: space-between;
-  border-radius: 35px;
-  cursor: pointer;
 }
 .type-tags, .pattern-tags{
   min-height: 30px;

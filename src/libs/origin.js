@@ -94,6 +94,7 @@ const upload = async (pattData, styleA, styleB, styleC, typeA, typeB, typeC, NSF
         typetag_a:typeA,
         typetag_b:typeB,
         typetag_c:typeC,
+        likes:[],
         nokids:(NSFW?"Y":"")
     }
   ).then(function() {
@@ -202,6 +203,47 @@ const recent = async (options) => {
   });
 }
 
+
+const getLikes = async (hash) => {
+  return db.collection("patterns").doc(hash).get().then(function(doc) {
+    if (doc.exists) {
+        console.log("Document data:", doc.data().likes);
+        return doc.data().likes;
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+        return ""
+    }
+  }).catch(function(error) {
+    console.log("Error getting document:", error);
+    return ""
+  });
+}
+
+const toggleLike = async (hash, ip, likes) => {
+  // console.log("toggleLike");
+  // console.log(ip);
+  // console.log(likes);
+  if(likes.includes(ip)){
+// Atomically remove a region from the "regions" array field.
+  return db.collection("patterns").doc(hash).update({
+   likes: firebase.firestore.FieldValue.arrayRemove(ip)
+    });
+  } else {
+    return db.collection("patterns").doc(hash).update({
+   likes: firebase.firestore.FieldValue.arrayUnion(ip)
+    });
+  }
+}
+
+const getIP = async () => {
+  return fetch('https://api.ipify.org?format=json')
+  .then(x => x.json())
+  .then(({ ip }) => {
+      console.log(ip);
+      return ip;
+  });
+}
 // const modLogIn = async (username, password) => {
 //   try {
 //     const response = await api.post("api.php", {
@@ -288,6 +330,9 @@ export default {
   search,
   recent,
   view,
+  toggleLike,
+  getLikes,
+  getIP,
   // modLogIn,
   // modPending,
   // modApprove,

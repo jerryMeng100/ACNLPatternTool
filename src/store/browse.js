@@ -11,6 +11,7 @@ const state = {
   pageNumber: 0,
   initResultsRetrieved: false,
   results: [],
+  ip: "",
 };
 
 // 'computed' for stores, when mapping, use computed
@@ -130,6 +131,7 @@ const actions = {
     else {
       results = await origin.search(state.query, options);
     }
+    state.ip = await origin.getIP();
     commit('setViewOptions', { pageNumber: 0 });
     commit('setSearchResults', { results });
   }
