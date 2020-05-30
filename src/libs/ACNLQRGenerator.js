@@ -28,13 +28,13 @@ async function generateACNLQR(newData){
   const tInfo = drawingTool.typeInfo;
   const bytes = drawingTool.toBytes();
   const renderCanvas = document.createElement("canvas");
-  renderCanvas.width = tInfo.size;
-  renderCanvas.height = tInfo.size;
+  renderCanvas.width = 1024;
+  renderCanvas.height = 1024;
   drawingTool.addCanvas(renderCanvas);
   const qrCanvas = document.createElement("canvas");
   const textureCanvas = document.createElement("canvas");
-  let width = 440;
-  let height = 270;
+  let width = 1024;
+  let height = 1024;
   //Check if we should 3D render or not
   let path3D;
   switch (drawingTool.patternType){
@@ -47,8 +47,8 @@ async function generateACNLQR(newData){
   }
   if (path3D){
     //We need to 3D render!
-    textureCanvas.width = 128;
-    textureCanvas.height = 512;
+    textureCanvas.width = 1024;
+    textureCanvas.height = 1024;
     drawingTool.addCanvas(textureCanvas, {tall:true});
     drawingTool.render();
     textureCanvas.getContext("2d").clearRect(0, 0, 128, 1);
@@ -59,8 +59,8 @@ async function generateACNLQR(newData){
   //Update internal canvas size to width/height
   //Only happens right before redraw
   if (drawingTool.width > 32){
-    width = 760;
-    height = 460;
+    width = 1024;
+    height = 1024;
   }
   qrCanvas.width = width;
   qrCanvas.height = height;
@@ -94,37 +94,41 @@ async function generateACNLQR(newData){
   let sPw = tInfo.size;//default pattern width
   let sPh = tInfo.size;//default pattern height
   if (tInfo.sections instanceof Array){//If we have a simple pattern type, take the custom width/height from it
-    sPw = tInfo.sections[2];//custom width
-    sPh = tInfo.sections[3];//custom height
+    sPw = tInfo.sections[2]*16;//custom width
+    sPh = tInfo.sections[3]*16;//custom height
   }
-  let qrWidth = (sQR+spc*4)*2-6;
-  if (bytes.byteLength <= 620){qrWidth = width/2;}
+
+  //let qrWidth = (sQR+spc*4)*2-6;
+  let qrWidth = 0;
+  //if (bytes.byteLength <= 620){qrWidth = width/2;}
   const pattCenter = (width - qrWidth)/2;
 
 
   //Create pretty background pattern on temp canvas
   const bgCanvas = document.createElement("canvas");
-  bgCanvas.width=45;
-  bgCanvas.height=45;
+  //bgCanvas.width=45;
+  //bgCanvas.height=45;
   const bgCtx = bgCanvas.getContext("2d");
-  bgCtx.fillStyle = "#FFFFFF";
-  bgCtx.fillRect(0, 0, 45, 45);
-  bgCtx.fillStyle = "#9b003a44";
-  bgCtx.rotate(Math.PI / 4);
-  bgCtx.fillRect(0, -80, 16, 160);
-  bgCtx.fillRect(32, -80, 16, 160);
-  bgCtx.rotate(-Math.PI / 2);
-  bgCtx.fillRect(0, -80, 16, 160);
-  bgCtx.fillRect(-32, -80, 16, 160);
+  // bgCtx.fillStyle = "#FFFFFF";
+  // bgCtx.fillRect(0, 0, 45, 45);
+  // bgCtx.fillStyle = "#9b003a44";
+  // bgCtx.rotate(Math.PI / 4);
+  // bgCtx.fillRect(0, -80, 16, 160);
+  // bgCtx.fillRect(32, -80, 16, 160);
+  // bgCtx.rotate(-Math.PI / 2);
+  // bgCtx.fillRect(0, -80, 16, 160);
+  // bgCtx.fillRect(-32, -80, 16, 160);
   //Copy background to main canvas
-  ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
-  ctx.fillRect(0, 0, width, height);
+  //ctx.fillStyle = ctx.createPattern(bgCanvas, "repeat");
+  //ctx.fillRect(0, 0, width, height);
 
   //Draw the pattern itself to canvas
   if (true){//!path3D){
-    const pattSize = Math.floor((height-60)/sPh);
+    const pattSize = Math.floor((height)/sPh);
+    //const pattSize = 1;
     pattHeight = pattSize*sPh;
-    ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, (height-pattHeight)/2, pattSize*sPw, pattHeight);
+    //ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, (height-pattHeight)/2, pattSize*sPw, pattHeight);
+    ctx.drawImage(renderCanvas, 0, 0, sPw, sPh, pattCenter-(sPw*pattSize)/2, 0, pattSize*sPw, pattHeight);
   }//else{
   //   pattHeight = height-60;
   //   //3D render!
@@ -168,12 +172,12 @@ async function generateACNLQR(newData){
   // }
 
   //Prepare background pattern for text
-  bgCanvas.width=1;
-  bgCanvas.height=2;
-  bgCtx.fillStyle = "#792e58";
-  bgCtx.fillRect(0, 0, 1, 1);
-  bgCtx.fillStyle = "#883e5f";
-  bgCtx.fillRect(0, 1, 1, 1);
+  bgCanvas.width=1024;
+  bgCanvas.height=1024;
+  bgCtx.fillStyle = "#000000";
+  //bgCtx.fillRect(1, 1, 1, 1);
+  bgCtx.fillStyle = "#000000";
+  //bgCtx.fillRect(1, 1, 1, 1);
   const txtBg = ctx.createPattern(bgCanvas, "repeat");
 
   const drawTxtWithBg = (x, y, txt, fore) => {
@@ -183,46 +187,46 @@ async function generateACNLQR(newData){
     ctx.fillStyle=txtBg;
     ctx.strokeStyle=fore;
     //Calculate background
-    ctx.beginPath();
-    ctx.arc(x-w/2, y, h/2, 0.5*Math.PI, 1.5*Math.PI);
-    ctx.lineTo(x+w/2, y-h/2);
-    ctx.arc(x+w/2, y, h/2, 1.5*Math.PI, 0.5*Math.PI);
-    ctx.lineTo(x+-w/2, y+h/2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle="#00000088";
-    ctx.strokeStyle="#00000088";
-    ctx.fillText(txt, x+2, y+2);
-    ctx.fillStyle=fore;
-    ctx.strokeStyle=fore;
-    ctx.fillText(txt, x, y);
+    // ctx.beginPath();
+    // ctx.arc(x-w/2, y, h/2, 0.5*Math.PI, 1.5*Math.PI);
+    // ctx.lineTo(x+w/2, y-h/2);
+    // ctx.arc(x+w/2, y, h/2, 1.5*Math.PI, 0.5*Math.PI);
+    // ctx.lineTo(x+-w/2, y+h/2);
+    // ctx.fill();
+    // ctx.stroke();
+    // ctx.fillStyle="#00000088";
+    // ctx.strokeStyle="#00000088";
+    // ctx.fillText(txt, x+2, y+2);
+    // ctx.fillStyle=fore;
+    // ctx.strokeStyle=fore;
+    // ctx.fillText(txt, x, y);
   }
 
 
   //Write text
-  ctx.textBaseline = "middle";
-  ctx.textAlign = 'center';
+  // ctx.textBaseline = "middle";
+  // ctx.textAlign = 'center';
 
-  if (bytes.byteLength > 620){
-    ctx.font = '15pt Calibri';
-    drawTxtWithBg(pattCenter, (height-pattHeight)/4+(path3D?4:0), drawingTool.title, "#FFFFFF");
-    ctx.font = '10pt Calibri';
-    drawTxtWithBg(pattCenter, height-(height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
-  }
-  else {
-    ctx.font = '15pt Calibri';
-    drawTxtWithBg(width/2, (height-pattHeight)/4-2, drawingTool.title, "#FFFFFF");
-    ctx.font = '10pt Calibri';
-    drawTxtWithBg(width/2, height-2-(height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
-  }
+  // if (bytes.byteLength > 620){
+  //   ctx.font = '15pt Calibri';
+  //   drawTxtWithBg(pattCenter, (height-pattHeight)/4+(path3D?4:0), drawingTool.title, "#FFFFFF");
+  //   ctx.font = '10pt Calibri';
+  //   drawTxtWithBg(pattCenter, height-(height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
+  // }
+  // else {
+  //   ctx.font = '15pt Calibri';
+  //   drawTxtWithBg(width/2, (height-pattHeight)/4-2, drawingTool.title, "#FFFFFF");
+  //   ctx.font = '10pt Calibri';
+  //   drawTxtWithBg(width/2, height-2-(height-pattHeight)/4, "By "+drawingTool.creator[0] + " from "+drawingTool.town[0], "#FFFFFF");
+  // }
 
   //Prepare pretty side decoration
-  bgCanvas.width=3;
-  bgCanvas.height=6;
+  bgCanvas.width=1024;
+  bgCanvas.height=1024;
   bgCtx.fillStyle = "#FFFFFF";
-  bgCtx.fillRect(0, 0, 3, 6);
+  //bgCtx.fillRect(0, 0, 3, 6);
   bgCtx.fillStyle = "#c7b98c";
-  bgCtx.fillRect(0.5, 0, 2, 4);
+  //bgCtx.fillRect(0.5, 0, 2, 4);
   const borderDeco = ctx.createPattern(bgCanvas, "repeat")
 
   //Draws the passed QRCode with top left corner on the x/y location.
@@ -233,17 +237,17 @@ async function generateACNLQR(newData){
     const qrSize = input.getWidth();//We assume width==height. It should be...
     //Draw white background
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(x-spc, y-spc, qrSize*pixelSize+2*spc, qrSize*pixelSize+2*spc);
+    //ctx.fillRect(x-spc, y-spc, qrSize*pixelSize+2*spc, qrSize*pixelSize+2*spc);
     //Draw border decorations
     ctx.fillStyle = borderDeco;
-    ctx.fillRect(x-3-spc, y-spc, 3, qrSize*pixelSize+2*spc);
-    ctx.fillRect(x+qrSize*pixelSize+spc, y-spc, 3, qrSize*pixelSize+2*spc);
+    //ctx.fillRect(x-3-spc, y-spc, 3, qrSize*pixelSize+2*spc);
+    //ctx.fillRect(x+qrSize*pixelSize+spc, y-spc, 3, qrSize*pixelSize+2*spc);
     //Draw all black blocks (BG is already white, after all!)
     ctx.fillStyle = "#000000";
     for (let inputY = 0; inputY < qrSize; inputY++) {
         for (let inputX = 0; inputX < qrSize; inputX++) {
             if (input.get(inputX, inputY) === 1){
-              ctx.fillRect(x+inputX*pixelSize, y+inputY*pixelSize, pixelSize, pixelSize);
+              //ctx.fillRect(x+inputX*pixelSize, y+inputY*pixelSize, pixelSize, pixelSize);
             }
         }
     }
